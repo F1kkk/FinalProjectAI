@@ -4,12 +4,6 @@
 
 Sebuah prototipe game balap yang dibuat sebagai Proyek Akhir (Final Project) untuk mata kuliah Kecerdasan Buatan (Artificial Intelligence). Proyek ini mendemonstrasikan 5 konsep inti AI dalam game, menggunakan **Wheel Collider** untuk fisika mobil yang realistis dan **Path Following** untuk navigasi.
 
-## 🚀 Demo
-
-(Sangat disarankan untuk merekam GIF atau video pendek dari game-mu dan letakkan di sini!)
-
-![Demo AI Balapan](LINK_KE_GIF_DEMO_KAMU.gif)
-
 ## 🎯 Latar Belakang Proyek
 
 Proyek ini dibuat untuk memenuhi tugas Final Project mata kuliah Kecerdasan Buatan di **Politeknik Elektronika Negeri Surabaya (PENS)**. Tujuannya adalah untuk mengimplementasikan 5 konsep AI yang telah dipelajari dalam sebuah prototipe game yang fungsional dan dapat didemonstrasikan.
@@ -33,7 +27,7 @@ Prototipe ini secara spesifik mendemonstrasikan 5 konsep inti AI dari materi per
 * **Logika:** AI memiliki beberapa "state" perilaku berdasarkan situasinya:
     1.  **State `GAS_PENUH`:** Jika jalur lurus (`angleToTarget` kecil).
     2.  **State `BELOK_BIASA`:** Jika tikungan biasa (`angleToTarget` sedang), AI mengurangi `motorTorque`.
-    3.  **State `REMB_TIKUNGAN_TAJAM`:** Jika tikungan sangat tajam (`angleToTarget` besar) DAN mobil melaju kencang, AI akan mengurangi gas dan mengaktifkan `brakeTorque`.
+    3.  **State `REM_TIKUNGAN_TAJAM`:** Jika tikungan sangat tajam (`angleToTarget` besar) DAN mobil melaju kencang, AI akan mengurangi gas dan mengaktifkan `brakeTorque`.
     4.  **State `START_TIKUNGAN`:** Jika tikungan tajam TAPI mobil diam (seperti di garis start), AI akan mengabaikan rem dan hanya menggunakan gas kecil agar bisa mulai bergerak.
 
 ### 4. Reflex Agents (Materi: day 02)
@@ -88,8 +82,3 @@ Untuk menjalankan proyek ini di Unity:
     * Pasang skrip `PowerUpCube.cs`.
     * Pastikan `Box Collider`-nya di-set ke `Is Trigger`.
     * Beri `Tag` "PowerUpBox".
-
-## 🎓 Acknowledgements
-
-* Proyek ini dibimbing oleh Dosen [NAMA DOSENMU, misal: Pak Kholid Fathoni, S.ST., M.T.].
-* Aset 3D dan lintasan oleh [SUMBER ASET, misal: 'Kenney.nl' atau 'Unity Asset Store'].
