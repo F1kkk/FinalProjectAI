@@ -10,7 +10,7 @@ public class AICarController : MonoBehaviour
     // ===================================================================
     [Header("1. Navigasi Path (Waypoints)")]
     [Tooltip("Tarik semua GameObject Waypoint kamu ke list ini")]
-    public List<Transform> waypoints; // Gunakan List simpel
+    public List<Transform> waypoints;
     private int currentWaypointIndex = 0;
 
     // ===================================================================
@@ -37,9 +37,9 @@ public class AICarController : MonoBehaviour
     // ===================================================================
     [Header("2. Steering (Tenaga & Belok)")]
     [Tooltip("TENAGA BESAR agar bisa gerakkan Mass 1500. Coba 25000")]
-    public float maxMotorTorque = 25000f; // TENAGA BESAR!
+    public float maxMotorTorque = 25000f;
     [Tooltip("TENAGA REM BESAR. Coba 50000")]
-    public float maxBrakeTorque = 50000f; // REM BESAR!
+    public float maxBrakeTorque = 50000f;
     [Tooltip("Sudut belok roda. Coba 35")]
     public float maxSteerAngle = 35f;
     [Tooltip("Radius (jarak) dari waypoint untuk ganti target. Coba 10")]
@@ -52,14 +52,32 @@ public class AICarController : MonoBehaviour
     [Header("3. FSM (State & Visuals)")]
     public Material racingMaterial;
     public Material recoveringMaterial;
-    private Renderer carRenderer;
+    
+    // --- INI PERUBAHANNYA ---
+    [Tooltip("Tarik GameObject bodi mobil (yang punya Mesh Renderer) ke sini")]
+    public Renderer carBodyRenderer; // Slot baru untuk bodi mobil
+    // -----------------------
+
+    
+    // ===================================================================
+    // KOMPONEN 5: REVISI FSM (BOOST)
+    // ===================================================================
+    [Header("4. Efek Visual (Boost)")]
+    [Tooltip("Material yang akan digunakan untuk kelap-kelip")]
+    public Material boostFlashMaterial; 
+    [Tooltip("Durasi setiap kelap-kelip (misal: 0.1 detik)")]
+    public float flashDuration = 0.1f;
+    [Tooltip("Berapa lama efek boost & kelap-kelip aktif (detik)")]
+    public float boostDuration = 4f; 
+    
+    private Material originalRacingMaterial; 
+    private Coroutine flashingEffectCoroutine; 
 
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        carRenderer = GetComponent<Renderer>();
-
+        
         // Setup Center of Mass (SANGAT PENTING)
         if (centerOfMass)
         {
@@ -72,21 +90,27 @@ public class AICarController : MonoBehaviour
         SetupWheelMesh(meshRL, wheelRL);
         SetupWheelMesh(meshRR, wheelRR);
         
-        // (Visual)
-        if(carRenderer) carRenderer.material = racingMaterial;
+        // (Visual) Menggunakan slot carBodyRenderer baru
+        if(carBodyRenderer) carBodyRenderer.material = racingMaterial;
+        
+        // Simpan material racing asli
+        if (racingMaterial != null)
+        {
+            originalRacingMaterial = racingMaterial;
+        }
+        else if (carBodyRenderer != null) // Fallback jika racingMaterial lupa diisi
+        {
+            originalRacingMaterial = carBodyRenderer.material;
+        }
     }
 
     // ===================================================================
-    // FUNGSI FIXEDUPDATE BARU (ANTI-MACET DI GARIS START)
+    // FUNGSI FIXEDUPDATE (ANTI-MACET DI GARIS START)
     // ===================================================================
     void FixedUpdate()
     {
         if (waypoints.Count == 0) return;
 
-        // ===================================================================
-        // LOGIKA AI (OTAK & OTOT) - VERSI BARU
-        // ===================================================================
-        
         // 1. (OTAK) Tentukan target waypoint
         Transform targetWaypoint = waypoints[currentWaypointIndex];
 
@@ -100,9 +124,7 @@ public class AICarController : MonoBehaviour
         float torque = maxMotorTorque;
         float brake = 0f;
 
-        // --- Logika FSM Baru (Anti-Macet) ---
-        
-        // Cek kecepatan mobil saat ini (dalam m/s)
+        // --- Logika FSM (Anti-Macet) ---
         float currentSpeed = rb.velocity.magnitude;
 
         // JIKA TIKUNGAN SANGAT TAJAM (lebih dari 45 derajat)
@@ -111,14 +133,12 @@ public class AICarController : MonoBehaviour
             // DAN JIKA KITA SEDANG MELAJU KENCANG (misal, lebih dari 5 m/s)
             if (currentSpeed > 5f) 
             {
-                // Baru kita REM dan kurangi GAS
                 torque = maxMotorTorque * 0.1f; // Gas 10%
                 brake = maxBrakeTorque;         // REM PENUH!
             }
             // JIKA KITA DIAM (seperti di garis start)
             else
             {
-                // JANGAN REM. Cukup kurangi GAS agar bisa belok pelan-pelan
                 torque = maxMotorTorque * 0.3f; // Gas 30% (agar bisa start)
                 brake = 0f;                     // JANGAN REM!
             }
@@ -126,14 +146,12 @@ public class AICarController : MonoBehaviour
         // JIKA TIKUNGAN BIASA (15-45 derajat)
         else if (Mathf.Abs(angleToTarget) > 15f)
         {
-            // Kurangi gas sedikit, tidak perlu rem
             torque = maxMotorTorque * 0.6f; // Gas 60%
             brake = 0f;
         }
         // JIKA LURUS
         else
         {
-            // Gas penuh, tidak ada rem
             torque = maxMotorTorque;
             brake = 0f;
         }
@@ -150,12 +168,10 @@ public class AICarController : MonoBehaviour
         wheelRL.brakeTorque = brake;
         wheelRR.brakeTorque = brake;
 
-
         // 5. (NAVIGASI) Cek jika sudah sampai di waypoint
         if (distanceToTarget < waypointRadius)
         {
             currentWaypointIndex++;
-            // Jika sudah di waypoint terakhir, kembali ke awal (looping)
             if (currentWaypointIndex >= waypoints.Count)
             {
                 currentWaypointIndex = 0;
@@ -164,32 +180,66 @@ public class AICarController : MonoBehaviour
     }
     
     // ===================================================================
-    // KOMPONEN 5: PROBABILITY (Fungsi Boost Sesuai Permintaan)
+    // KOMPONEN 5: PROBABILITY (Fungsi Boost dengan FSM Kelap-kelip)
     // ===================================================================
-    // (Akan dipanggil oleh PowerUpCube.cs)
     public IEnumerator ActivateSpeedBoost()
     {
         Debug.Log("PROBABILITY: Kena PowerUp, BERHASIL boost!");
-        // Kita tidak bisa langsung set torque, jadi kita simpan
         float originalTorque = maxMotorTorque;
         
-        // Sesuai permintaan: 4x tenaga
+        // Tenaga boost
         maxMotorTorque = originalTorque * 4f; 
         
-        // Sesuai permintaan: 4 detik
-        yield return new WaitForSeconds(4f); 
+        // Mulai coroutine kelap-kelip
+        if (flashingEffectCoroutine != null) StopCoroutine(flashingEffectCoroutine);
+        flashingEffectCoroutine = StartCoroutine(FlashMaterialEffect());
+
+        // Tunggu durasi boost (menggunakan variabel)
+        yield return new WaitForSeconds(boostDuration); 
         
-        maxMotorTorque = originalTorque; // Kembali normal
+        // Hentikan boost
+        maxMotorTorque = originalTorque; 
         Debug.Log("Boost AI selesai.");
+
+        // Hentikan coroutine kelap-kelip DAN kembalikan material
+        if (flashingEffectCoroutine != null) StopCoroutine(flashingEffectCoroutine);
+        if (carBodyRenderer != null && originalRacingMaterial != null)
+        {
+            carBodyRenderer.material = originalRacingMaterial; 
+        }
     }
     
+    // ===================================================================
+    // FUNGSI COROUTINE BARU: Efek Visual Kelap-kelip
+    // ===================================================================
+    IEnumerator FlashMaterialEffect()
+    {
+        // Pastikan kita punya material untuk kelap-kelip dan renderer
+        if (boostFlashMaterial == null || carBodyRenderer == null || originalRacingMaterial == null)
+        {
+            Debug.LogWarning("Material Boost atau Renderer Bodi belum di-set!");
+            yield break; // Tidak bisa kelap-kelip jika material tidak diset
+        }
+
+        // Loop tak terbatas (akan dihentikan oleh ActivateSpeedBoost)
+        while (true)
+        {
+            // Ubah ke material kelap-kelip
+            carBodyRenderer.material = boostFlashMaterial;
+            yield return new WaitForSeconds(flashDuration);
+
+            // Ubah kembali ke material asli
+            carBodyRenderer.material = originalRacingMaterial;
+            yield return new WaitForSeconds(flashDuration);
+        }
+    }
+
     // --- Fungsi Helper (Sama) ---
 
     void SetupWheelMesh(Transform mesh, WheelCollider collider)
     {
         if (mesh)
         {
-            // Cek dulu jika sudah ada skripnya
             AIWheelMesh wheelScript = mesh.gameObject.GetComponent<AIWheelMesh>();
             if (wheelScript == null)
             {

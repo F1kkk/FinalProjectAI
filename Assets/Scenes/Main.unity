@@ -342,7 +342,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11f7cd15ffe5454aac47cf7d4cda29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostChance: 0.5
+  boostChance: 1
   respawnTime: 5
 --- !u!1 &217150472
 GameObject:
@@ -462,13 +462,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.9938938, z: -0.1103415, w: 0}
-  m_LocalPosition: {x: -33.28, y: 11.71, z: 18.89}
+  m_LocalRotation: {x: 0, y: 0.9975641, z: -0.06975647, w: 0}
+  m_LocalPosition: {x: -33.28, y: 10.1, z: 17.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 12.67, y: 180, z: 0}
+  m_LocalEulerAnglesHint: {x: 8, y: 180, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,9 +526,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 173900665271901561}
-  offset: {x: 0, y: 5, z: -10}
-  followSpeed: 8
-  turnSpeed: 4
+  offset: {x: 0, y: 4.15, z: -6}
+  followSpeed: 20
+  turnSpeed: 8
 --- !u!1 &379978550
 GameObject:
   m_ObjectHideFlags: 0
@@ -607,7 +607,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11f7cd15ffe5454aac47cf7d4cda29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostChance: 0.5
+  boostChance: 1
   respawnTime: 5
 --- !u!65 &390342249
 BoxCollider:
@@ -984,7 +984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11f7cd15ffe5454aac47cf7d4cda29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostChance: 0.5
+  boostChance: 1
   respawnTime: 5
 --- !u!65 &594505584
 BoxCollider:
@@ -1107,7 +1107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11f7cd15ffe5454aac47cf7d4cda29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostChance: 0.5
+  boostChance: 1
   respawnTime: 5
 --- !u!65 &595235069
 BoxCollider:
@@ -1554,7 +1554,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11f7cd15ffe5454aac47cf7d4cda29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostChance: 0.5
+  boostChance: 1
   respawnTime: 5
 --- !u!65 &988228202
 BoxCollider:
@@ -1782,7 +1782,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11f7cd15ffe5454aac47cf7d4cda29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostChance: 0.5
+  boostChance: 1
   respawnTime: 5
 --- !u!1 &1349006245
 GameObject:
@@ -1933,7 +1933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11f7cd15ffe5454aac47cf7d4cda29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostChance: 0.5
+  boostChance: 1
   respawnTime: 5
 --- !u!65 &1416250215
 BoxCollider:
@@ -2056,7 +2056,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11f7cd15ffe5454aac47cf7d4cda29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostChance: 0.5
+  boostChance: 1
   respawnTime: 5
 --- !u!65 &1647001172
 BoxCollider:
@@ -2252,7 +2252,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11f7cd15ffe5454aac47cf7d4cda29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostChance: 0.5
+  boostChance: 1
   respawnTime: 5
 --- !u!65 &1699890880
 BoxCollider:
@@ -2449,7 +2449,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11f7cd15ffe5454aac47cf7d4cda29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostChance: 0.5
+  boostChance: 1
   respawnTime: 5
 --- !u!1 &1801761414
 GameObject:
@@ -2665,7 +2665,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11f7cd15ffe5454aac47cf7d4cda29a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boostChance: 0.5
+  boostChance: 1
   respawnTime: 5
 --- !u!1 &2118824214
 GameObject:
@@ -2931,6 +2931,10 @@ MonoBehaviour:
   waypointRadius: 10
   racingMaterial: {fileID: 2100000, guid: bcd49a2a316d51342b40d044e1276483, type: 2}
   recoveringMaterial: {fileID: 2100000, guid: 23cac7ed834aab84cb6d196854557feb, type: 2}
+  carBodyRenderer: {fileID: 8354488315813847994}
+  boostFlashMaterial: {fileID: 2100000, guid: 3a41798fb4590204792c4f3da5c36560, type: 2}
+  flashDuration: 0.1
+  boostDuration: 4
 --- !u!23 &1429943314916979390
 MeshRenderer:
   m_ObjectHideFlags: 0
